@@ -1,0 +1,25 @@
+{
+  "name": "Auto Paste Picture in Google Translate",
+  "version": "1.0.0",
+  "description": "",
+  "manifest_version": 3,
+  "icons": {
+    "16": "./image/extension.png",
+    "32": "./image/extension.png",
+    "48": "./image/extension.png",
+    "128": "./image/extension.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "run_at": "document_start",
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": [
+    "tabs"
+  ]
+}
