@@ -37,6 +37,7 @@ function checkTranslateTab() {
             if (isCustomTimeout(checkTab, timer)) {
                 return reject('Timeout: checking translate status.');
             }
+            console.log('yes');
             if (!translateTabInit) return;
             clearInterval(checkTab);
             resolve();
@@ -75,4 +76,12 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
     setTranslateTabStatus(msg, sender);
+});
+
+chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+    if (msg !== 'config') return;
+    chrome.tabs.sendMessage(sender.tab.id, {
+        msg: 'config',
+        data: config
+    });
 });
