@@ -37,7 +37,6 @@ function checkTranslateTab() {
             if (isCustomTimeout(checkTab, timer)) {
                 return reject('Timeout: checking translate status.');
             }
-            console.log('yes');
             if (!translateTabInit) return;
             clearInterval(checkTab);
             resolve();
