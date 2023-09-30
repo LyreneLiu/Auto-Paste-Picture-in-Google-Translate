@@ -56,7 +56,7 @@ function setTranslateTabStatus(msg, sender) {
 }
 
 function getCustomTranslateUrl() {
-    return config.googleTranslateUrl
+    return `${config.custom.googleTranslateUrl}?op=images`
         + `&sl=${config.custom.translateFrom}`
         + `&tl=${config.custom.translateTo}`;
 }

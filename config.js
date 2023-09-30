@@ -1,10 +1,9 @@
 const custom = {
+    googleTranslateUrl: 'https://translate.google.com/',
     translateInNewWindow: true,
     translateFrom: 'en',
     translateTo: 'fr'
 };
-
-const googleTranslateUrl = 'https://translate.google.com/?op=images';
 
 const msgs = {
     picCopied: 'Picture copied.',
@@ -14,6 +13,5 @@ const msgs = {
 
 export {
     custom,
-    googleTranslateUrl,
     msgs
 };
