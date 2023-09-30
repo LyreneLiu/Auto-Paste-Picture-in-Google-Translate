@@ -1,16 +1,40 @@
 let config;
+let contentmenuInterval = null;
 
 async function init() {
     await getConfig();
-    window.addEventListener('copy', callTransTab);
     chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
         if (msg === config.msgs.transPageActive) pastePic();
     });
-    chrome.runtime.sendMessage(config.msgs.tabInit);
+}
+
+function onLoad() {
+    observeBtn();
+    document.addEventListener('copy', callTransTab);
+    document.addEventListener('contextmenu', async function (e) {
+        await navigator.clipboard.writeText('');
+        contentmenuInterval = setInterval(async function () {
+            if (await navigator.clipboard.read()) callTransTab();
+        }, 500);
+    });
+}
+
+function observeBtn() {
+    let btnObserver = new MutationObserver((mymutations) => {
+        if (!getBtn()) return;
+        btnObserver.disconnect();
+        chrome.runtime.sendMessage(config.msgs.tabInit);
+    });
+    btnObserver.observe(document.body, {
+        childList : true,
+        subtree : true,
+        attributes : false
+    });
 }
 
 async function callTransTab() {
     try {
+        clearInterval(contentmenuInterval);
         const COPIED = await navigator.clipboard.read();
         for (let i = 0, l = COPIED.length; i < l; i ++) {
             if (!COPIED[i].types.find((v) => v.match('image'))) return;
@@ -29,7 +53,11 @@ function addFocusListener(func) {
 }
 
 function pastePic() {
-    document.querySelector(`[aria-label="${config.custom.btnAriaLabel}"]`).click();
+    getBtn().click();
+}
+
+function getBtn() {
+    return document.querySelector(`[aria-label="${config.custom.btnAriaLabel}"]`);
 }
 
 function getConfig() {
@@ -46,3 +74,4 @@ function getConfig() {
 }
 
 init();
+window.addEventListener('load', onLoad, false);
