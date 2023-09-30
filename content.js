@@ -4,6 +4,8 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
     if (msg === 'Google Translate is active.') pastePic();
 });
 
+chrome.runtime.sendMessage('Tab is initialized.');
+
 async function callTransTab() {
     try {
         const COPIED = await navigator.clipboard.read();
