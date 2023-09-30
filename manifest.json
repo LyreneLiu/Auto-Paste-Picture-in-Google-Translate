@@ -1,7 +1,7 @@
 {
-  "name": "Auto Paste Picture in Google Translate",
+  "name": "Auto Paste Picture to Google Translate",
   "version": "1.0.0",
-  "description": "",
+  "description": "Solution to Stack Overflow question: 77196889",
   "manifest_version": 3,
   "icons": {
     "16": "./image/extension.png",
@@ -10,13 +10,18 @@
     "128": "./image/extension.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
+      "matches": [
+        "*://*/*"
+      ],
       "run_at": "document_start",
-      "js": ["content.js"]
+      "js": [
+        "content.js"
+      ]
     }
   ],
   "permissions": [
