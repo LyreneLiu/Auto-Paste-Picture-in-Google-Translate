@@ -1,8 +1,13 @@
-window.addEventListener('copy', callTransTab);
+let config;
 
-chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-    if (msg === 'Google Translate is active.') pastePic();
-});
+async function init() {
+    await getConfig();
+    window.addEventListener('copy', callTransTab);
+    chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+        if (msg === config.msgs.transPageActive) pastePic();
+    });
+    chrome.runtime.sendMessage(config.msgs.tabInit);
+}
 
 async function callTransTab() {
     try {
@@ -10,8 +15,8 @@ async function callTransTab() {
         for (let i = 0, l = COPIED.length; i < l; i ++) {
             if (!COPIED[i].types.find((v) => v.match('image'))) return;
         }
-        chrome.runtime.sendMessage('Picture copied.');
-    } catch (e) {
+        chrome.runtime.sendMessage(config.msgs.picCopied);
+    } catch (e) { // if Chrome haven't got the clipboard permission
         addFocusListener(callTransTab);
     }
 }
@@ -24,5 +29,20 @@ function addFocusListener(func) {
 }
 
 function pastePic() {
-    document.querySelector('[aria-label="貼上剪貼簿中的圖片"]').click();
+    document.querySelector(`[aria-label="${config.custom.btnAriaLabel}"]`).click();
 }
+
+function getConfig() {
+    return new Promise((reslove, reject) => {
+        let setConfig = async function (msg, sender, sendResponse) {
+            if (msg.msg !== 'config') return;
+            chrome.runtime.onMessage.removeListener(setConfig);
+            config = msg.data;
+            reslove();
+        };
+        chrome.runtime.onMessage.addListener(setConfig);
+        chrome.runtime.sendMessage('config');    
+    });
+}
+
+init();
